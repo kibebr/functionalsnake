@@ -1,4 +1,5 @@
 ﻿module Snake
+  open Utils
   open Block
 
   type Tail = Block list
@@ -7,18 +8,19 @@
     | NormalSnake of SnakeData 
     | CollidedSnake of SnakeData * Block
 
-  let getSnakeHead snake = List.head snake.Tail
+  let getHead snake = List.head snake.Tail
 
-  let attachNewHeadToTail head tail = head :: List.tail tail
+  let attachNewHeadToTail head tail = head :: tail
 
   let moveSnake (NormalSnake snake) = 
     snake
-    |> getSnakeHead
+    |> getHead
     |> moveBlock snake.Direction
     |> attachNewHeadToTail <| snake.Tail
+    |> removeLastElement 
     |> (fun newTail -> NormalSnake { snake with Tail = newTail })
   
-  let changeDirection direction snake = 
+  let changeDirection (direction: Direction) (snake: Snake) = 
     match snake with
     | NormalSnake data -> NormalSnake { data with Direction = direction }
 
